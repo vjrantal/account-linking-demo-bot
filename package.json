@@ -1,0 +1,23 @@
+{
+  "name": "account-linking-demo-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vjrantal/account-linking-demo-bot.git"
+  },
+  "author": "Ville Rantala",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vjrantal/account-linking-demo-bot/issues"
+  },
+  "homepage": "https://github.com/vjrantal/account-linking-demo-bot",
+  "dependencies": {
+    "botbuilder": "^3.4.4",
+    "restify": "^4.2.0"
+  }
+}
