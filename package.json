@@ -18,6 +18,7 @@
   "homepage": "https://github.com/vjrantal/account-linking-demo-bot",
   "dependencies": {
     "botbuilder": "^3.4.4",
+    "request": "^2.78.0",
     "restify": "^4.2.0"
   }
 }

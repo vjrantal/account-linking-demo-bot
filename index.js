@@ -1,7 +1,8 @@
 var restify = require('restify');
 var builder = require('botbuilder');
+var request = require('request');
 
-var FRONTEND_URL = process.env.MICROSOFT_FRONTEND_URL || 'https://localhost';
+var FRONTEND_URL = process.env.BOT_FRONTEND_URL || 'https://localhost';
 
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
@@ -53,6 +54,10 @@ intents.onDefault(function (session) {
     var authorizationStatus = accountLinking.status;
     if (authorizationStatus === 'linked') {
       session.endDialog('Account linked - you are now known as: ' + username);
+    } else if (authorizationStatus === 'unlinked') {
+      session.endDialog('Account unlinked');
+    } else {
+      session.endDialog('Unknown account linking event received');
     }
   } else {
     session.endDialog('I hear you - type "link account" to try out account linking');
@@ -80,6 +85,32 @@ intents.matches(/^link account/i,
           }
         }
       });
-    session.send(message);
+    session.endDialog(message);
+  }
+);
+
+intents.matches(/^unlink account/i,
+  function (session) {
+    request({
+      url: 'https://graph.facebook.com/v2.6/me/unlink_accounts',
+      method: 'POST',
+      qs: {
+        access_token: process.env.FACEBOOK_PAGE_TOKEN
+      },
+      body: {
+        psid: session.message.address.user.id
+      },
+      json: true
+    }, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        // No need to do anything send anything to the user
+        // in the success case since we respond only after
+        // we have received the account unlinking webhook
+        // event from Facebook.
+        session.endDialog();
+      } else {
+        session.endDialog('Error while unlinking account');
+      }
+    });
   }
 );
