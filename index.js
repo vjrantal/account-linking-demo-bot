@@ -53,14 +53,23 @@ intents.onDefault(function (session) {
     var username = accountLinking.authorization_code;
     var authorizationStatus = accountLinking.status;
     if (authorizationStatus === 'linked') {
-      session.endDialog('Account linked - you are now known as: ' + username);
+      // Persist username under the userData
+      session.userData.username = username;
+      session.endDialog('Account linked - you are now known as ' + username);
     } else if (authorizationStatus === 'unlinked') {
+      // Remove username from the userData
+      delete session.userData.username;
       session.endDialog('Account unlinked');
     } else {
       session.endDialog('Unknown account linking event received');
     }
   } else {
-    session.endDialog('I hear you - type "link account" to try out account linking');
+    var storedUsername = session.userData.username;
+    if (storedUsername) {
+      session.endDialog('You are known as ' + storedUsername + ' - type "unlink account" to try out unlinking');
+    } else {
+      session.endDialog('I hear you - type "link account" to try out account linking');
+    }
   }
 });
 
